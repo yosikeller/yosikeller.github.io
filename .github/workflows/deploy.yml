@@ -1,0 +1,56 @@
+name: Deploy prof-cv-builder to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout prof-cv-builder
+        uses: actions/checkout@v5
+        with:
+          repository: yosikeller/prof-cv-builder
+          path: prof-cv-builder
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        working-directory: prof-cv-builder
+        run: npm install
+
+      - name: Build static site
+        working-directory: prof-cv-builder
+        run: npm run build
+
+      - name: Copy 404.html for SPA routing
+        run: cp prof-cv-builder/dist/index.html prof-cv-builder/dist/404.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: prof-cv-builder/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
