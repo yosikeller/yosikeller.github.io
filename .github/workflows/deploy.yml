@@ -43,6 +43,17 @@ jobs:
       - name: Copy 404.html for SPA routing
         run: cp prof-cv-builder/dist/index.html prof-cv-builder/dist/404.html
 
+      - name: Checkout site assets
+        uses: actions/checkout@v5
+        with:
+          repository: yosikeller/yosikeller.github.io
+          path: site-assets
+
+      - name: Copy download.html and CV PDF to dist
+        run: |
+          cp site-assets/download.html prof-cv-builder/dist/
+          cp site-assets/yosi_keller_cv.pdf prof-cv-builder/dist/
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
