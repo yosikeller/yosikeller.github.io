@@ -53,6 +53,7 @@ jobs:
         run: |
           cp site-assets/download.html prof-cv-builder/dist/
           cp site-assets/yosi_keller_cv.pdf prof-cv-builder/dist/
+          cp -r site-assets/publications prof-cv-builder/dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
